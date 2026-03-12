@@ -18,5 +18,5 @@ export function loadTokens(): TokenData {
 }
 
 export function saveTokens(t: TokenData): void {
-  fs.writeFileSync(TOKEN_FILE, JSON.stringify(t, null, 2));
+  fs.writeFileSync(TOKEN_FILE, JSON.stringify(t, null, 2), { mode: 0o600 });
 }

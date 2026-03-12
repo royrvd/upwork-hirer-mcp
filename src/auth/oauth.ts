@@ -19,9 +19,19 @@ export function buildAuthUrl(): string {
 export function waitForCallback(timeoutMs = 120_000): Promise<{ code: string; state: string }> {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
-      const url = new URL(req.url!, "http://localhost:3000");
-      const code = url.searchParams.get("code")!;
-      const state = url.searchParams.get("state")!;
+      const url = new URL(req.url ?? "/", "http://localhost:3000");
+      if (!url.pathname.startsWith("/callback")) {
+        res.writeHead(404);
+        res.end();
+        return;
+      }
+      const code = url.searchParams.get("code");
+      const state = url.searchParams.get("state");
+      if (!code || !state) {
+        res.writeHead(400, { "Content-Type": "text/html" });
+        res.end("<h2>Missing code or state parameter.</h2>");
+        return;
+      }
       res.writeHead(200, { "Content-Type": "text/html" });
       res.end("<h2>Upwork auth complete! You can close this tab and return to Claude.</h2>");
       server.close();

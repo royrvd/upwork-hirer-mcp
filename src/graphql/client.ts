@@ -22,6 +22,8 @@ async function ensureValidToken(): Promise<string> {
         expires_at: Date.now() + (data.expires_in || 86400) * 1000,
       };
       saveTokens(t);
+    } else {
+      console.error(`Token refresh failed (${res.status}). Re-authenticate with auth_start.`);
     }
   }
   return t.access_token!;
