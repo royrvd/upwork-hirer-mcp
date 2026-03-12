@@ -150,10 +150,10 @@ export async function handleMilestoneTool(name: string, args: Record<string, unk
     case "delete_milestone": {
       const data = await gql(`
         mutation DeleteMilestone($input: DeleteMilestoneInput!) {
-          deleteMilestone(input: $input) { id }
+          deleteMilestone(input: $input)
         }
       `, { input: { id: args.milestone_id as string } });
-      return data.deleteMilestone;
+      return { deleted: data.deleteMilestone };
     }
 
     case "activate_milestone": {
@@ -185,10 +185,10 @@ export async function handleMilestoneTool(name: string, args: Record<string, unk
     case "reject_milestone": {
       const data = await gql(`
         mutation RejectMilestone($input: RejectMilestoneSubmissionInput!) {
-          rejectSubmittedMilestone(input: $input) { id state }
+          rejectSubmittedMilestone(input: $input) { response }
         }
       `, { input: { id: args.milestone_id as string, noteToContractor: args.note_to_contractor as string } });
-      return data.rejectSubmittedMilestone;
+      return { rejected: data.rejectSubmittedMilestone?.response };
     }
 
     default:

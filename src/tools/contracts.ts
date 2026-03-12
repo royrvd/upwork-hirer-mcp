@@ -119,19 +119,19 @@ export async function handleContractTool(name: string, args: Record<string, unkn
     case "pause_contract": {
       const data = await gql(`
         mutation PauseContract($contractId: ID!, $message: String) {
-          pauseContract(contractId: $contractId, message: $message) { id status }
+          pauseContract(contractId: $contractId, message: $message) { success }
         }
       `, { contractId: args.contract_id as string, message: (args.message as string) || null });
-      return data.pauseContract;
+      return { success: data.pauseContract?.success };
     }
 
     case "restart_contract": {
       const data = await gql(`
         mutation RestartContract($contractId: ID!, $message: String) {
-          restartContract(contractId: $contractId, message: $message) { id status }
+          restartContract(contractId: $contractId, message: $message) { success }
         }
       `, { contractId: args.contract_id as string, message: (args.message as string) || null });
-      return data.restartContract;
+      return { success: data.restartContract?.success };
     }
 
     default:

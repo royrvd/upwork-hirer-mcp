@@ -139,19 +139,19 @@ export async function handleMessageTool(name: string, args: Record<string, unkno
     case "update_message": {
       const data = await gql(`
         mutation UpdateMessage($input: RoomStoryUpdateInputV2!) {
-          updateRoomStoryV2(input: $input) { ${STORY_FIELDS} }
+          updateRoomStoryV2(input: $input) { status }
         }
       `, { input: { roomId: args.room_id as string, storyId: args.story_id as string, message: args.message as string } });
-      return data.updateRoomStoryV2;
+      return { status: data.updateRoomStoryV2?.status };
     }
 
     case "delete_message": {
       const data = await gql(`
         mutation DeleteMessage($roomId: ID!, $storyId: ID!) {
-          removeRoomStory(roomId: $roomId, storyId: $storyId) { id }
+          removeRoomStory(roomId: $roomId, storyId: $storyId)
         }
       `, { roomId: args.room_id as string, storyId: args.story_id as string });
-      return data.removeRoomStory;
+      return { deleted: data.removeRoomStory };
     }
 
     default:
